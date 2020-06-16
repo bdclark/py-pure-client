@@ -14,25 +14,33 @@ The library requires Python 2.7 and higher or Python 3.3 and higher. Third-party
 libraries are also required.
 
 ## Installation
+The Pure Storage Unified SDK supports two installation methods:
 
-### pip Installation
-For Python 2.x:
+#### Pure1 API Encrypted Private Key Support
+Use this installation method if support is required for encrypted private keys
+(i.e. via passphrase). This method uses the [`Paramiko`][1] Python Module to
+decrypt passphrase-protected private keys.
+
+***Please note:*** The Paramiko module has dependencies that are not pure python,
+so the installation will be platform-specific (ie. not easily portable).
+
 ```
-$ pip install py-pure-client
-```
-For Python 3.x:
-```
-$ pip3 install py-pure-client
+pip install py-pure-client[paramiko]
 ```
 
-### Manual Installation
+#### Pure Python
+Use this method if a pure Python implementation is desired, and there is no need
+to support private keys with passphrases.
+
+***Please note:*** If a password is supplied when creating a new  to supply a
+password when creating a new `pypureclient.pure1.Client`, it will be ignored.
+
 ```
-$ git clone https://github.com/PureStorage-OpenConnect/py-pure-client.git
-$ cd py-pure-client
-$ pip install -r requirements.txt
-$ python setup.py install
+pip install py-pure-client
 ```
 
 ## Documentation
 
 For full documentation, including a quick start guide and examples, see https://py-pure-client.readthedocs.io/en/latest/.
+
+[1]: https://github.com/paramiko/paramiko

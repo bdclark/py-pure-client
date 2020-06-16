@@ -1,8 +1,14 @@
-import jwt
+from jose import jwt
 import requests
 import time
 from io import StringIO
-from paramiko import RSAKey
+
+try:
+    from paramiko import RSAKey
+    ENCRYPTED_PRIVATE_KEY_SUPPORT = True
+except ImportError:
+    ENCRYPTED_PRIVATE_KEY_SUPPORT = False
+    pass
 
 from .exceptions import PureError
 
@@ -60,17 +66,21 @@ class TokenManager(object):
     def _generate_id_token(self, headers, payload, private_key):
         payload['iat'] = int(time.time())
         payload['exp'] = int(time.time()) + self.EXP_TIME_IN_SECONDS
-        new_jwt = jwt.encode(payload, private_key, algorithm=self.ALGORITHM, headers=headers)
-        return new_jwt.decode()
+        return jwt.encode(payload, private_key, algorithm=self.ALGORITHM, headers=headers)
 
     def _get_private_key(self, private_key_file, private_key_password):
-        try:
-            rsa_key = RSAKey.from_private_key_file(private_key_file, private_key_password)
-        except:
-            raise PureError('Could not read private key file')
-        with StringIO() as buf:
-            rsa_key.write_private_key(buf)
-            private_key = buf.getvalue()
+        if ENCRYPTED_PRIVATE_KEY_SUPPORT:
+            try:
+                rsa_key = RSAKey.from_private_key_file(
+                    private_key_file, private_key_password)
+            except:
+                raise PureError('Could not read private key file')
+            with StringIO() as buf:
+                rsa_key.write_private_key(buf)
+                private_key = buf.getvalue()
+        else:
+            with open(private_key_file, 'r') as f:
+                private_key = f.read()
         return private_key
 
     def get_access_token(self, refresh=False):
@@ -180,7 +190,7 @@ class TokenManager(object):
             PureError: If there was an error decoding the access token.
         """
         try:
-            jwt_claims = jwt.decode(self._access_token.encode(),
+            jwt_claims = jwt.decode(self._access_token,
                                     algorithms=self.ALGORITHM,
                                     options={
                                         'verify_signature': False,

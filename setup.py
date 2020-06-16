@@ -12,8 +12,12 @@ NAME = 'py-pure-client'
 VERSION = '1.6.0'
 
 REQUIRES = ['urllib3 >= 1.15', 'six >= 1.10', 'certifi >= 14.05.14',
-            'python-dateutil >= 2.5.3', 'paramiko >= 2.4.2',
-            'PyJWT >= 1.7.1', 'requests >= 2.20.1']
+            'python-dateutil >= 2.5.3', 'python-jose >= 3.1.0',
+            'requests >= 2.20.1']
+
+EXTRAS_REQUIRE = {
+    'paramiko': ['paramiko >= 2.4.2']
+}
 
 readme = open('README.md', 'r')
 README_TEXT = readme.read()
@@ -30,6 +34,7 @@ setup(
     keywords=['Swagger', 'Pure Storage', 'Python', 'clients', 'REST', 'API', 'FlashArray', 'FlashBlade', 'Pure1'],
     license='BSD 2-Clause',
     install_requires=REQUIRES,
+    extras_require=EXTRAS_REQUIRE,
     packages=find_packages(),
     include_package_data=True,
     long_description=README_TEXT,
