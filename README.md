@@ -32,8 +32,8 @@ pip install py-pure-client[paramiko]
 Use this method if a pure Python implementation is desired, and there is no need
 to support private keys with passphrases.
 
-***Please note:*** If a password is supplied when creating a new  to supply a
-password when creating a new `pypureclient.pure1.Client`, it will be ignored.
+***Please note:*** If a password is supplied when creating a new
+`pypureclient.pure1.Client`, it will be ignored.
 
 ```
 pip install py-pure-client
